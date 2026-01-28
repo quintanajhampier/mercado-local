@@ -3,83 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huanta - Mercado Local</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Huanta App - Mercado Total</title>
+    <style>
+        :root { --verde: #008f39; --esmeralda: #2ecc71; --rojo: #e74c3c; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            /* Fondo de Mercado suave */
+            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&q=80&w=1000');
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        header { background: var(--verde); color: white; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .tabs { display: flex; overflow-x: auto; background: white; padding: 10px; gap: 8px; border-bottom: 1px solid #ddd; }
+        .tab-btn { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--verde); background: white; white-space: nowrap; cursor: pointer; font-size: 14px; }
+        .tab-btn.active { background: var(--verde); color: white; }
+        
+        .sticker-bar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); }
+        .stk { background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        
+        #chat-box { padding: 15px; padding-bottom: 260px; }
+        .msg { background: rgba(255, 255, 255, 0.95); padding: 12px; border-radius: 12px; margin-bottom: 12px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 6px solid var(--verde); }
+        .msg.urgente { border-left-color: var(--rojo); }
+        .tag { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 5px; display: inline-block; }
+        .tag-venta { background: #e8f5e9; color: var(--verde); }
+        .tag-aviso { background: #fff3e0; color: #ef6c00; }
+        .tag-urgente { background: #ffebee; color: var(--rojo); }
+        
+        .user { font-weight: bold; color: #333; display: flex; align-items: center; gap: 5px; }
+        .esmeralda { color: var(--esmeralda); font-size: 12px; font-weight: bold; }
+        .btn-wa { display: block; background: #25d366; color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 10px; font-weight: bold; font-size: 14px; }
+        .vistas { font-size: 11px; color: #777; margin-top: 8px; text-align: right; }
+        
+        .footer { position: fixed; bottom: 0; width: 100%; background: white; box-sizing: border-box; border-top: 1px solid #ddd; z-index: 2000; padding-bottom: 10px; }
+        .form-content { padding: 10px; }
+        .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
+        #send-btn { width: 100%; padding: 12px; background: var(--verde); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        
+        .media-btns { display: flex; gap: 5px; margin-bottom: 8px; }
+        .m-btn { flex: 1; padding: 8px; font-size: 11px; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 5px; cursor: pointer; text-align: center; }
+    </style>
 </head>
-<body class="bg-emerald-50 h-screen flex flex-col">
+<body>
+<header><strong>HUANTA COMUNIDAD</strong><br><small>La Esmeralda de los Andes</small></header>
+<div class="tabs">
+    <button class="tab-btn active" onclick="setCity('Huanta')">Huanta</button>
+    <button class="tab-btn" onclick="setCity('Huamanga')">Huamanga</button>
+    <button class="tab-btn" onclick="setCity('Sivia')">Sivia</button>
+    <button class="tab-btn" onclick="setCity('VRAEM')">VRAEM</button>
+    <button class="tab-btn" onclick="setCity('Emergencias')">🚨 Emergencias</button>
+</div>
 
-    <div class="bg-emerald-600 text-white p-4 text-center shadow-lg">
-        <h1 class="text-xl font-bold uppercase tracking-widest">Huanta</h1>
-        <p class="text-xs italic">Comunidad Sin Límites</p>
+<div id="chat-box"></div>
+
+<div class="footer">
+    <div class="sticker-bar">
+        <div class="stk" onclick="addStk('💰 ¡OFERTA ÚNICA! 💰')">💰 Oferta</div>
+        <div class="stk" onclick="addStk('🏡 TERRENO/CASA 🏡')">🏡 Terreno</div>
+        <div class="stk" onclick="addStk('⭐ 100% GARANTIZADO ⭐')">⭐ Garantía</div>
+        <div class="stk" onclick="addStk('📉 ¡PRECIO DE LOCURA! 📉')">📉 Rebaja</div>
+        <div class="stk" onclick="addStk('⏰ ¡ÚLTIMOS CUPOS! ⏰')">⏰ Tiempo</div>
     </div>
-
-    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4">
-        <div class="bg-white border-l-4 border-emerald-500 p-3 rounded shadow-sm">
-            <p class="text-emerald-700 font-bold text-xs">Sistema:</p>
-            <p class="text-gray-700 text-sm">¡Bienvenido! Aquí tus mensajes se guardarán para siempre. ¡Empieza a vender en Huanta!</p>
+    <div class="form-content">
+        <div class="media-btns">
+            <div class="m-btn" onclick="alert('Funcionalidad de fotos en desarrollo para la Versión 2.0')">📷 Subir Foto</div>
+            <div class="m-btn" onclick="alert('Funcionalidad de audio en desarrollo para la Versión 2.0')">🎤 Enviar Audio</div>
         </div>
-    </div>
-
-    <div class="p-4 bg-white border-t border-emerald-100">
-        <div class="flex gap-2">
-            <input type="text" id="msg-input" placeholder="¿Qué vendes hoy?" class="flex-1 border border-emerald-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <button id="send-btn" class="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-emerald-700 transition">ENVIAR</button>
+        <div class="inputs-grid">
+            <input type="text" id="user" placeholder="Tu Nombre">
+            <select id="tipo">
+                <option value="venta">💰 Venta</option>
+                <option value="aviso">📢 Aviso</option>
+                <option value="urgente">🔥 Urgente</option>
+            </select>
         </div>
+        <input type="number" id="phone" placeholder="WhatsApp (Ej: 987654321)" style="margin-bottom: 8px;">
+        <input type="text" id="msg-input" placeholder="Escribe tu oferta aquí..." style="margin-bottom: 8px;">
+        <button id="send-btn">PUBLICAR AHORA</button>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPKyUcP87-LUrtGP-8jiZ8T0PldVRhH9k",
+      authDomain: "huanta-comunidad.firebaseapp.com",
+      projectId: "huanta-comunidad",
+      storageBucket: "huanta-comunidad.firebasestorage.app",
+      messagingSenderId: "572754145420",
+      appId: "1:572754145420:web:8021c982b3cc4a576b4ba9"
+    };
 
-        // Tus llaves personales de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAPKyUcP87-LUrtGP-8jiZ8T0PldVRhH9k",
-            authDomain: "huanta-comunidad.firebaseapp.com",
-            projectId: "huanta-comunidad",
-            storageBucket: "huanta-comunidad.firebasestorage.app",
-            messagingSenderId: "572754145420",
-            appId: "1:572754145420:web:8021c982b3cc4a576b4ba9",
-            measurementId: "G-EWF76P1D4C"
-        };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let city = 'Huanta';
 
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const chatBox = document.getElementById('chat-box');
-        const msgInput = document.getElementById('msg-input');
-        const sendBtn = document.getElementById('send-btn');
+    window.addStk = (s) => {
+        const input = document.getElementById('msg-input');
+        input.value = s + " " + input.value;
+    };
 
-        // Función para enviar mensajes a la nube
-        sendBtn.onclick = async () => {
-            if (msgInput.value.trim() !== "") {
-                try {
-                    await addDoc(collection(db, "mensajes"), {
-                        texto: msgInput.value,
-                        fecha: serverTimestamp(),
-                        usuario: "Vendedor de Huanta"
-                    });
-                    msgInput.value = "";
-                } catch (e) {
-                    console.error("Error al enviar: ", e);
-                    alert("Asegúrate de haber activado el 'Modo de prueba' en Firebase.");
-                }
-            }
-        };
+    window.setCity = (n) => {
+        city = n;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText.includes(n)));
+        loadMsgs();
+    };
 
-        // Escuchar mensajes en tiempo real
-        const q = query(collection(db, "mensajes"), orderBy("fecha", "asc"));
-        onSnapshot(q, (snapshot) => {
-            chatBox.innerHTML = ""; 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const div = document.createElement('div');
-                div.className = "bg-white p-3 rounded-lg shadow-sm border border-emerald-100 ml-auto max-w-[80%]";
-                div.innerHTML = `<p class="text-emerald-600 font-bold text-xs">${data.usuario}:</p>
-                                 <p class="text-gray-800 text-sm">${data.texto}</p>`;
-                chatBox.appendChild(div);
+    document.getElementById('send-btn').onclick = async () => {
+        const u = document.getElementById('user').value;
+        const m = document.getElementById('msg-input').value;
+        const p = document.getElementById('phone').value;
+        const t = document.getElementById('tipo').value;
+        if(u && m) {
+            await addDoc(collection(db, "mensajes"), { u, m, p, t, city, time: Timestamp.now(), vip: false, views: Math.floor(Math.random() * 50) + 10 });
+            document.getElementById('msg-input').value = "";
+        }
+    };
+
+    function loadMsgs() {
+        const limit = new Date(); limit.setHours(limit.getHours() - 24);
+        const q = query(collection(db, "mensajes"), where("city", "==", city), where("time", ">=", limit), orderBy("time", "desc"));
+        onSnapshot(q, (snap) => {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                box.innerHTML += `<div class="msg ${d.t == 'urgente' ? 'urgente' : ''}">
+                    <span class="tag tag-${d.t}">${d.t}</span>
+                    <div class="user">${d.u} ${d.vip ? '<span class="esmeralda">💎 Esmeralda</span>' : ''}</div>
+                    <div style="margin: 8px 0; color: #333; font-size: 15px;">${d.m}</div>
+                    ${d.p ? `<a href="https://wa.me/51${d.p}" class="btn-wa">Escribir al WhatsApp</a>` : ''}
+                    <div class="vistas">👁️ Visto por ${d.views} personas • ${d.time.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                </div>`;
             });
-            chatBox.scrollTop = chatBox.scrollHeight;
         });
-    </script>
+    }
+    loadMsgs();
+</script>
 </body>
 </html>
