@@ -1,82 +1,85 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Comunidad Huanta</title>
+    <title>Huanta - Mercado Local</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #f0fdf4; }
-        .chat-container { height: calc(100vh - 140px); }
-    </style>
 </head>
-<body class="font-sans">
-    <div id="registro" class="flex flex-col items-center justify-center h-screen p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-center border-t-8 border-emerald-500">
-            <h1 class="text-4xl font-black text-emerald-700 mb-2">HUANTA</h1>
-            <p class="text-emerald-600 font-bold mb-6 italic">Comunidad Sin Límites</p>
-            <div class="space-y-4">
-                <input type="text" id="nombreUsuario" placeholder="¿Cómo te llamas?" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 rounded-2xl focus:outline-none focus:border-emerald-500 text-lg">
-                <button onclick="entrarAlChat()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-lg transform active:scale-95 transition text-xl">
-                    EMPEZAR A VENDER
-                </button>
-            </div>
-            <p class="mt-6 text-xs text-gray-400">Al entrar, aceptas las reglas de la comunidad de Huanta.</p>
+<body class="bg-emerald-50 h-screen flex flex-col">
+
+    <div class="bg-emerald-600 text-white p-4 text-center shadow-lg">
+        <h1 class="text-xl font-bold uppercase tracking-widest">Huanta</h1>
+        <p class="text-xs italic">Comunidad Sin Límites</p>
+    </div>
+
+    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="bg-white border-l-4 border-emerald-500 p-3 rounded shadow-sm">
+            <p class="text-emerald-700 font-bold text-xs">Sistema:</p>
+            <p class="text-gray-700 text-sm">¡Bienvenido! Aquí tus mensajes se guardarán para siempre. ¡Empieza a vender en Huanta!</p>
         </div>
     </div>
 
-    <div id="pantallaChat" class="hidden flex flex-col h-screen bg-white">
-        <header class="bg-emerald-600 text-white p-4 shadow-lg flex justify-between items-center">
-            <div>
-                <h2 class="font-black text-xl">MERCADO HUANTA</h2>
-                <p class="text-xs text-emerald-100">En línea ahora</p>
-            </div>
-            <span id="userTag" class="bg-emerald-700 px-3 py-1 rounded-full text-sm"></span>
-        </header>
-
-        <div id="mensajes" class="chat-container p-4 overflow-y-auto space-y-4 bg-slate-50">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-emerald-500">
-                <p class="text-emerald-700 font-bold text-sm">Sistema:</p>
-                <p class="text-gray-700">¡Bienvenido! Este es tu espacio para vender y conectar con todo Huanta sin límites de personas. Escribe algo para probar.</p>
-            </div>
-        </div>
-
-        <div class="p-4 bg-white border-t-2 border-emerald-50 flex gap-2">
-            <input type="text" id="mensajeInput" placeholder="Escribe tu oferta aquí..." class="flex-1 p-4 bg-gray-100 rounded-2xl outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition">
-            <button onclick="enviarMensaje()" class="bg-emerald-500 text-white p-4 rounded-2xl font-bold">
-                ENVIAR
-            </button>
+    <div class="p-4 bg-white border-t border-emerald-100">
+        <div class="flex gap-2">
+            <input type="text" id="msg-input" placeholder="¿Qué vendes hoy?" class="flex-1 border border-emerald-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <button id="send-btn" class="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-emerald-700 transition">ENVIAR</button>
         </div>
     </div>
 
-    <script>
-        function entrarAlChat() {
-            const nombre = document.getElementById('nombreUsuario').value;
-            if (nombre.trim().length > 2) {
-                document.getElementById('userTag').innerText = nombre;
-                document.getElementById('registro').classList.add('hidden');
-                document.getElementById('pantallaChat').classList.remove('hidden');
-            } else {
-                alert('Escribe un nombre real para que los clientes te reconozcan.');
-            }
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        function enviarMensaje() {
-            const input = document.getElementById('mensajeInput');
-            const texto = input.value;
-            const nombre = document.getElementById('userTag').innerText;
-            
-            if (texto.trim() !== "") {
-                const caja = document.getElementById('mensajes');
-                const nuevoMsg = document.createElement('div');
-                nuevoMsg.className = "bg-white p-4 rounded-2xl shadow-sm self-end ml-auto border-r-4 border-emerald-500 max-w-[80%]";
-                nuevoMsg.innerHTML = `<p class="text-emerald-600 font-bold text-xs">${nombre}:</p><p class="text-gray-800">${texto}</p>`;
-                caja.appendChild(nuevoMsg);
-                input.value = "";
-                caja.scrollTop = caja.scrollHeight;
+        // Tus llaves personales de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAPKyUcP87-LUrtGP-8jiZ8T0PldVRhH9k",
+            authDomain: "huanta-comunidad.firebaseapp.com",
+            projectId: "huanta-comunidad",
+            storageBucket: "huanta-comunidad.firebasestorage.app",
+            messagingSenderId: "572754145420",
+            appId: "1:572754145420:web:8021c982b3cc4a576b4ba9",
+            measurementId: "G-EWF76P1D4C"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const chatBox = document.getElementById('chat-box');
+        const msgInput = document.getElementById('msg-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Función para enviar mensajes a la nube
+        sendBtn.onclick = async () => {
+            if (msgInput.value.trim() !== "") {
+                try {
+                    await addDoc(collection(db, "mensajes"), {
+                        texto: msgInput.value,
+                        fecha: serverTimestamp(),
+                        usuario: "Vendedor de Huanta"
+                    });
+                    msgInput.value = "";
+                } catch (e) {
+                    console.error("Error al enviar: ", e);
+                    alert("Asegúrate de haber activado el 'Modo de prueba' en Firebase.");
+                }
             }
-        }
+        };
+
+        // Escuchar mensajes en tiempo real
+        const q = query(collection(db, "mensajes"), orderBy("fecha", "asc"));
+        onSnapshot(q, (snapshot) => {
+            chatBox.innerHTML = ""; 
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const div = document.createElement('div');
+                div.className = "bg-white p-3 rounded-lg shadow-sm border border-emerald-100 ml-auto max-w-[80%]";
+                div.innerHTML = `<p class="text-emerald-600 font-bold text-xs">${data.usuario}:</p>
+                                 <p class="text-gray-800 text-sm">${data.texto}</p>`;
+                chatBox.appendChild(div);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
     </script>
 </body>
 </html>
-
