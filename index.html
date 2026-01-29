@@ -3,145 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huanta App - Mercado Total</title>
+    <title>Huanta Comunidad - La Esmeralda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --verde: #008f39; --esmeralda: #2ecc71; --rojo: #e74c3c; }
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            /* Fondo de Mercado suave */
-            background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&q=80&w=1000');
-            background-attachment: fixed;
+        body {
+            background-image: url('https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&q=80&w=1000');
             background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
         }
-        header { background: var(--verde); color: white; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .tabs { display: flex; overflow-x: auto; background: white; padding: 10px; gap: 8px; border-bottom: 1px solid #ddd; }
-        .tab-btn { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--verde); background: white; white-space: nowrap; cursor: pointer; font-size: 14px; }
-        .tab-btn.active { background: var(--verde); color: white; }
-        
-        .sticker-bar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); }
-        .stk { background: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        
-        #chat-box { padding: 15px; padding-bottom: 260px; }
-        .msg { background: rgba(255, 255, 255, 0.95); padding: 12px; border-radius: 12px; margin-bottom: 12px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 6px solid var(--verde); }
-        .msg.urgente { border-left-color: var(--rojo); }
-        .tag { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 5px; display: inline-block; }
-        .tag-venta { background: #e8f5e9; color: var(--verde); }
-        .tag-aviso { background: #fff3e0; color: #ef6c00; }
-        .tag-urgente { background: #ffebee; color: var(--rojo); }
-        
-        .user { font-weight: bold; color: #333; display: flex; align-items: center; gap: 5px; }
-        .esmeralda { color: var(--esmeralda); font-size: 12px; font-weight: bold; }
-        .btn-wa { display: block; background: #25d366; color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; margin-top: 10px; font-weight: bold; font-size: 14px; }
-        .vistas { font-size: 11px; color: #777; margin-top: 8px; text-align: right; }
-        
-        .footer { position: fixed; bottom: 0; width: 100%; background: white; box-sizing: border-box; border-top: 1px solid #ddd; z-index: 2000; padding-bottom: 10px; }
-        .form-content { padding: 10px; }
-        .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
-        #send-btn { width: 100%; padding: 12px; background: var(--verde); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        
-        .media-btns { display: flex; gap: 5px; margin-bottom: 8px; }
-        .m-btn { flex: 1; padding: 8px; font-size: 11px; background: #f8f9fa; border: 1px dashed #ccc; border-radius: 5px; cursor: pointer; text-align: center; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .sticker-btn {
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .sticker-btn:active { transform: scale(0.95); }
     </style>
 </head>
-<body>
-<header><strong>HUANTA COMUNIDAD</strong><br><small>La Esmeralda de los Andes</small></header>
-<div class="tabs">
-    <button class="tab-btn active" onclick="setCity('Huanta')">Huanta</button>
-    <button class="tab-btn" onclick="setCity('Huamanga')">Huamanga</button>
-    <button class="tab-btn" onclick="setCity('Sivia')">Sivia</button>
-    <button class="tab-btn" onclick="setCity('VRAEM')">VRAEM</button>
-    <button class="tab-btn" onclick="setCity('Emergencias')">🚨 Emergencias</button>
-</div>
+<body class="min-h-screen">
+    <header class="bg-green-700 text-white p-4 shadow-lg sticky top-0 z-50 text-center">
+        <h1 class="text-xl font-bold uppercase tracking-wider">Huanta Comunidad</h1>
+        <p class="text-xs opacity-90">La Esmeralda de los Andes</p>
+    </header>
 
-<div id="chat-box"></div>
-
-<div class="footer">
-    <div class="sticker-bar">
-        <div class="stk" onclick="addStk('💰 ¡OFERTA ÚNICA! 💰')">💰 Oferta</div>
-        <div class="stk" onclick="addStk('🏡 TERRENO/CASA 🏡')">🏡 Terreno</div>
-        <div class="stk" onclick="addStk('⭐ 100% GARANTIZADO ⭐')">⭐ Garantía</div>
-        <div class="stk" onclick="addStk('📉 ¡PRECIO DE LOCURA! 📉')">📉 Rebaja</div>
-        <div class="stk" onclick="addStk('⏰ ¡ÚLTIMOS CUPOS! ⏰')">⏰ Tiempo</div>
+    <div class="flex gap-2 p-3 overflow-x-auto bg-white/50 backdrop-blur-md">
+        <button onclick="setCity('Huanta')" class="bg-green-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow">Huanta</button>
+        <button onclick="setCity('Huamanga')" class="bg-white text-gray-700 border px-4 py-1 rounded-full text-sm font-bold shadow">Huamanga</button>
+        <button onclick="setCity('Sivia')" class="bg-white text-gray-700 border px-4 py-1 rounded-full text-sm font-bold shadow">Sivia</button>
+        <button onclick="setCity('VRAEM')" class="bg-white text-gray-700 border px-4 py-1 rounded-full text-sm font-bold shadow">VRAEM</button>
+        <span class="text-2xl">🚨</span>
     </div>
-    <div class="form-content">
-        <div class="media-btns">
-            <div class="m-btn" onclick="alert('Funcionalidad de fotos en desarrollo para la Versión 2.0')">📷 Subir Foto</div>
-            <div class="m-btn" onclick="alert('Funcionalidad de audio en desarrollo para la Versión 2.0')">🎤 Enviar Audio</div>
+
+    <main class="max-w-md mx-auto p-4 pb-32">
+        <div id="chat-container" class="space-y-4 mb-6">
+            </div>
+
+        <div class="grid grid-cols-4 gap-2 mb-4">
+            <button onclick="addSticker('💰 Oferta')" class="sticker-btn bg-white p-2 rounded-lg text-xs font-bold border border-green-200">💰 Oferta</button>
+            <button onclick="addSticker('🏡 Terreno')" class="sticker-btn bg-white p-2 rounded-lg text-xs font-bold border border-green-200">🏡 Terreno</button>
+            <button onclick="addSticker('⭐ Garantía')" class="sticker-btn bg-white p-2 rounded-lg text-xs font-bold border border-green-200">⭐ Garantía</button>
+            <button onclick="addSticker('📉 Rebaja')" class="sticker-btn bg-white p-2 rounded-lg text-xs font-bold border border-green-200">📉 Rebaja</button>
         </div>
-        <div class="inputs-grid">
-            <input type="text" id="user" placeholder="Tu Nombre">
-            <select id="tipo">
-                <option value="venta">💰 Venta</option>
-                <option value="aviso">📢 Aviso</option>
-                <option value="urgente">🔥 Urgente</option>
-            </select>
+
+        <div class="fixed bottom-0 left-0 right-0 p-4 glass-card border-t rounded-t-3xl shadow-2xl">
+            <div class="max-w-md mx-auto space-y-2">
+                <div class="flex gap-2">
+                    <input id="userInput" type="text" placeholder="Tu Nombre" class="w-1/2 p-2 rounded-xl border focus:ring-2 focus:ring-green-500 outline-none text-sm">
+                    <select id="typeInput" class="w-1/2 p-2 rounded-xl border text-sm font-bold bg-white">
+                        <option value="Venta">💰 Venta</option>
+                        <option value="Compra">🛒 Compra</option>
+                        <option value="Servicio">🛠️ Servicio</option>
+                    </select>
+                </div>
+                <input id="phoneInput" type="tel" placeholder="WhatsApp (Ej: 987654321)" class="w-full p-2 rounded-xl border text-sm">
+                <textarea id="messageInput" placeholder="Escribe tu oferta aquí..." class="w-full p-2 rounded-xl border h-16 text-sm outline-none"></textarea>
+                <button onclick="sendMsg()" id="sendBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg active:scale-95">
+                    PUBLICAR AHORA
+                </button>
+            </div>
         </div>
-        <input type="number" id="phone" placeholder="WhatsApp (Ej: 987654321)" style="margin-bottom: 8px;">
-        <input type="text" id="msg-input" placeholder="Escribe tu oferta aquí..." style="margin-bottom: 8px;">
-        <button id="send-btn">PUBLICAR AHORA</button>
-    </div>
-</div>
+    </main>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyAPKyUcP87-LUrtGP-8jiZ8T0PldVRhH9k",
-      authDomain: "huanta-comunidad.firebaseapp.com",
-      projectId: "huanta-comunidad",
-      storageBucket: "huanta-comunidad.firebasestorage.app",
-      messagingSenderId: "572754145420",
-      appId: "1:572754145420:web:8021c982b3cc4a576b4ba9"
-    };
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    let city = 'Huanta';
+        // CONFIGURACIÓN DE TU FIREBASE (COPIADA DE TU IMAGEN)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDE-...", 
+            authDomain: "huanta-comunidad.firebaseapp.com",
+            projectId: "huanta-comunidad",
+            storageBucket: "huanta-comunidad.appspot.com",
+            messagingSenderId: "572754145420",
+            appId: "1:572754145420:web:443f6562548858f967f650"
+        };
 
-    window.addStk = (s) => {
-        const input = document.getElementById('msg-input');
-        input.value = s + " " + input.value;
-    };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let currentCity = 'Huanta';
 
-    window.setCity = (n) => {
-        city = n;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText.includes(n)));
-        loadMsgs();
-    };
+        window.setCity = (city) => { currentCity = city; alert('Ciudad seleccionada: ' + city); };
+        window.addSticker = (s) => { document.getElementById('messageInput').value += s + ' '; };
 
-    document.getElementById('send-btn').onclick = async () => {
-        const u = document.getElementById('user').value;
-        const m = document.getElementById('msg-input').value;
-        const p = document.getElementById('phone').value;
-        const t = document.getElementById('tipo').value;
-        if(u && m) {
-            await addDoc(collection(db, "mensajes"), { u, m, p, t, city, time: Timestamp.now(), vip: false, views: Math.floor(Math.random() * 50) + 10 });
-            document.getElementById('msg-input').value = "";
-        }
-    };
+        // ENVIAR MENSAJE
+        window.sendMsg = async () => {
+            const u = document.getElementById('userInput').value;
+            const m = document.getElementById('messageInput').value;
+            const p = document.getElementById('phoneInput').value;
+            const t = document.getElementById('typeInput').value;
+            const btn = document.getElementById('sendBtn');
 
-    function loadMsgs() {
-        const limit = new Date(); limit.setHours(limit.getHours() - 24);
-        const q = query(collection(db, "mensajes"), where("city", "==", city), where("time", ">=", limit), orderBy("time", "desc"));
-        onSnapshot(q, (snap) => {
-            const box = document.getElementById('chat-box');
-            box.innerHTML = "";
-            snap.forEach(doc => {
+            if(!u || !m) return alert("Pon tu nombre y el mensaje");
+
+            btn.disabled = true;
+            btn.innerText = "Publicando...";
+
+            try {
+                await addDoc(collection(db, "mensajes"), {
+                    u: u, m: m, p: p, t: t,
+                    city: currentCity,
+                    time: Timestamp.now()
+                });
+                document.getElementById('messageInput').value = "";
+                btn.disabled = false;
+                btn.innerText = "PUBLICAR AHORA";
+            } catch (e) {
+                console.error(e);
+                alert("Error: Revisa las REGLAS en Firebase");
+                btn.disabled = false;
+                btn.innerText = "PUBLICAR AHORA";
+            }
+        };
+
+        // LEER MENSAJES EN TIEMPO REAL
+        const q = query(collection(db, "mensajes"), orderBy("time", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = "";
+            snapshot.forEach((doc) => {
                 const d = doc.data();
-                box.innerHTML += `<div class="msg ${d.t == 'urgente' ? 'urgente' : ''}">
-                    <span class="tag tag-${d.t}">${d.t}</span>
-                    <div class="user">${d.u} ${d.vip ? '<span class="esmeralda">💎 Esmeralda</span>' : ''}</div>
-                    <div style="margin: 8px 0; color: #333; font-size: 15px;">${d.m}</div>
-                    ${d.p ? `<a href="https://wa.me/51${d.p}" class="btn-wa">Escribir al WhatsApp</a>` : ''}
-                    <div class="vistas">👁️ Visto por ${d.views} personas • ${d.time.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                </div>`;
+                const card = `
+                    <div class="bg-white p-4 rounded-2xl shadow-md border-l-4 border-green-500 animate-fade-in">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-black text-green-700 text-sm">👤 ${d.u}</span>
+                            <span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-bold">${d.city}</span>
+                        </div>
+                        <p class="text-gray-800 text-sm mb-2">${d.m}</p>
+                        <div class="flex justify-between items-center border-t pt-2">
+                            <span class="text-xs font-bold text-orange-600">🏷️ ${d.t}</span>
+                            ${d.p ? `<a href="https://wa.me/51${d.p}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm">WhatsApp</a>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
             });
         });
-    }
-    loadMsgs();
-</script>
+    </script>
 </body>
 </html>
